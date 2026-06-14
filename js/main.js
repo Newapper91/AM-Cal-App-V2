@@ -253,6 +253,23 @@
         })
       : baseSchedule;
 
+    // ---- Regenerate baseSchedule if "Include extra payments" is checked ----
+    if ($('refi-includeExtras').checked) {
+      baseSchedule = Amortization.generateSchedule({
+        loanAmount,
+        annualRatePct: inputs.interestRate,
+        termYears: inputs.termYears,
+        startDate: inputs.loanStartDate,
+        purchasePrice: inputs.purchasePrice,
+        annualPMI,
+        pmiRemovalLTV: inputs.pmiRemovalLTV,
+        extraMonthly: inputs.extraMonthly,
+        oneTimeExtras: inputs.oneTimeExtras,
+        annualExtra: { amount: inputs.annualExtraAmount, month: inputs.annualExtraMonth },
+        extraStartDate: inputs.extraStartDate,
+      });
+    }
+
     const comparison = Amortization.compareSchedules(baseSchedule, extraSchedule);
     const pmiRemovalRow = Amortization.findPMIRemovalRow(baseSchedule, inputs.pmiRemovalLTV);
 
@@ -301,9 +318,9 @@
       comparison,
       hasExtraPayments,
       pmiRemovalRow,
-      totalInterestBase: last ? last.cumulativeInterest : 0,
-      totalPaidBase: loanAmount + (last ? last.cumulativeInterest : 0),
-      payoffDateBase: last ? last.date : inputs.loanStartDate,
+      totalInterestBase: (monthlyPI * baseSchedule.length) - loanAmount,
+      totalPaidBase: loanAmount + ((monthlyPI * baseSchedule.length) - loanAmount),
+      payoffDateBase: baseSchedule.length ? baseSchedule[baseSchedule.length - 1].date : inputs.loanStartDate,
       frontDTI,
       backDTI,
       cashToClose,
