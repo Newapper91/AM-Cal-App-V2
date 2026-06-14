@@ -52,8 +52,8 @@ const Refinance = {
     const usingExtras = !!(p.extras && p.extras.startDate);
 
     if (usingExtras) {
-      // Build full schedules for "keep current loan, starting today" and
-      // "refinance, starting today", both with the same extra-payment plan.
+      // Build full schedules for "keep current loan, starting today" and 
+      // "refinance, starting today", both with the same extra payment plan.
       // Whichever payoff comes first (likely sooner with extras applied)
       // determines the actual total interest paid.
       const extraParams = {
@@ -63,6 +63,7 @@ const Refinance = {
         extraStartDate: p.extras.extraStartDate || null,
       };
 
+      // Current loan schedule: start from *remaining* balance, not original amount
       const currentSchedule = Amortization.generateSchedule({
         loanAmount: p.currentBalance,
         annualRatePct: p.currentRatePct,
@@ -81,7 +82,7 @@ const Refinance = {
         ...extraParams,
       });
 
-      totalInterestCurrent = currentSchedule.length
+      totalInterestCurrent = currentSchedule.length 
         ? currentSchedule[currentSchedule.length - 1].cumulativeInterest : 0;
       totalInterestNew = newSchedule.length
         ? newSchedule[newSchedule.length - 1].cumulativeInterest : 0;
