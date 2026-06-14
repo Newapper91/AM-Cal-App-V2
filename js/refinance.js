@@ -93,13 +93,17 @@ const Refinance = {
       totalInterestNew = (newPayment * p.newTermYears * 12) - p.currentBalance;
     }
 
+    const lifetimeInterestDifference = totalInterestCurrent - totalInterestNew;
+
     return {
       currentPayment,
       newPayment,
       monthlySavings,
       totalInterestCurrent,
       totalInterestNew,
-      lifetimeInterestDifference: totalInterestCurrent - totalInterestNew,
+      lifetimeInterestDifference,
+      lifetimeInterestDifference_abs: Math.abs(lifetimeInterestDifference),
+      keepCurrentLoanSaves: lifetimeInterestDifference < 0,
       breakEvenMonths,
       breakEvenYears: breakEvenMonths !== null ? breakEvenMonths / 12 : null,
       usingExtras,

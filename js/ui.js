@@ -434,7 +434,16 @@ const UI = {
       : 'Never (new payment is not lower)';
     document.getElementById('refi-currentInterest').textContent = Fmt.currencyRounded(result.totalInterestCurrent);
     document.getElementById('refi-newInterest').textContent = Fmt.currencyRounded(result.totalInterestNew);
-    document.getElementById('refi-lifetimeDiff').textContent = Fmt.currencyRounded(result.lifetimeInterestDifference);
+
+    const diffEl = document.getElementById('refi-lifetimeDiff');
+    if (result.keepCurrentLoanSaves) {
+      diffEl.innerHTML = `
+        Keeping your current loan <strong>saves you ${Fmt.currencyRounded(result.lifetimeInterestDifference_abs)}</strong>
+        in total interest vs. refinancing, thanks to your extra payments.
+      `;
+    } else {
+      diffEl.textContent = Fmt.currencyRounded(result.lifetimeInterestDifference);
+    }
 
     document.getElementById('refi-extrasNote').hidden = !result.usingExtras;
     document.getElementById('refi-currentInterestLabel').textContent = result.usingExtras
